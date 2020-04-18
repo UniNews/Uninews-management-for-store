@@ -181,4 +181,7 @@ export default {
 .mg-r-10:nth-of-type(1) {
   margin-left: 20px;
 }
+.bg-green {
+  background-color: rgb(191, 252, 191);
+}
 </style>
