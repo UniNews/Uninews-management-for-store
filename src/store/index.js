@@ -15,5 +15,5 @@ const modules = {
 
 export default new Vuex.Store({
   modules,
-  plugins: [vuexLocal.plugin]
+  // plugins: [vuexLocal.plugin]
 })

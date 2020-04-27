@@ -10,12 +10,15 @@
             <b-input type="password" v-model="password"></b-input>
           </b-field>
           <div class="dp-flex flex-center">
-            <button class="button is-success is-outlined" v-on:click="onSubmit(username,password)">Login</button>
+            <button
+              class="button is-success is-outlined"
+              v-on:click="onSubmit(username,password)"
+            >Login</button>
           </div>
         </div>
       </div>
     </div>
-    <b-loading :is-full-page="true" :active.sync="isLoading"/>
+    <b-loading :is-full-page="true" :active.sync="isLoading" />
   </section>
 </template>
 
@@ -28,36 +31,32 @@ export default {
     return {
       username: null,
       password: null,
-      isLoading:false
+      isLoading: false
     };
+  },
+  watch: {
+    user: function(value) {
+      if (value) this.$router.push("/");
+    }
   },
   methods: {
     ...mapActions({
-      login:'Auth/login',
-      autoLogin:'Auth/autoLogin'
+      login: "Auth/login",
+      autoLogin: "Auth/autoLogin"
     }),
     async onSubmit(username, password) {
-      this.isLoading=true
+      this.isLoading = true;
       const auth = {
         username: this.username,
         password: this.password
-      }
-      const result = await this.login(auth)
-      this.isLoading=false
-      if(this.isAuthenticated) {
-        this.$router.push('/')
-      }
-    }
-  },
-  mounted(){
-    if(this.isAuthenticated){
-      this.autoLogin()
-      this.$router.push('/')
+      };
+      const result = await this.login(auth);
+      this.isLoading = false;
     }
   },
   computed: {
     ...mapGetters({
-      isAuthenticated:'Auth/isAuthenticated'
+      user: "Auth/getUser"
     })
   }
 };
@@ -69,7 +68,7 @@ export default {
   max-width: 33.3%;
 }
 .margin-auto {
-  margin:auto;
+  margin: auto;
 }
 .card-padding {
   padding: 15px;
