@@ -12,6 +12,12 @@
       <b-navbar-item href="/">
         Home
       </b-navbar-item>
+      <b-navbar-item href="/following">
+        Following
+      </b-navbar-item>
+      <b-navbar-item href="/follower">
+        Follower
+      </b-navbar-item>
     </template>
     <template slot="end">
       <b-navbar-item tag="div">
