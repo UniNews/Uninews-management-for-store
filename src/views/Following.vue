@@ -88,11 +88,14 @@ export default {
     };
   },
   methods: {
+    ...mapGetters({
+      getUser: 'Auth/getUser'
+    }),
     async fetchFollowings() {
       this.isLoading = true;
       this.followings = [];
-      for(let i in this.getUser.followings) {
-        const user = await userservice.getUserById(this.getUser.followings[i]);
+      for(let i in this.getUser().followings) {
+        const user = await userservice.getUserById(this.getUser().followings[i]);
         this.followings.push(user);
       }
       this.isLoading = false;
@@ -106,9 +109,6 @@ export default {
     this.fetchFollowings();
   },
   computed: {
-    ...mapGetters({
-      getUser: 'Auth/getUser'
-    }),
     filterFollowings() {
       return this.followings.filter(item => {
         if (this.query !== "") {
