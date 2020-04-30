@@ -47,6 +47,11 @@ export default new Router({
       name: 'NewsDetail',
       component: () => import('../views/NewsDetail'),
       // beforeEnter: ifNotAuthenticated,
+    },
+    {
+      path: '/postnews',
+      name: 'PostNews',
+      component: () => import('../views/PostNews')
     }
   ]
 })
