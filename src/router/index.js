@@ -36,5 +36,17 @@ export default new Router({
       component: () => import('../views/Login'),
       // beforeEnter: ifNotAuthenticated,
     },
+    {
+      path: '/news',
+      name: 'News',
+      component: () => import('../views/News'),
+      // beforeEnter: ifNotAuthenticated,
+    },
+    {
+      path: '/newsDetail',
+      name: 'NewsDetail',
+      component: () => import('../views/NewsDetail'),
+      // beforeEnter: ifNotAuthenticated,
+    }
   ]
 })
