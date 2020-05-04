@@ -1,7 +1,7 @@
 <template>
   <section class="hero is-small">
     <div class="hero-body">
-      <div class="container pd-150 mg-bt-25">
+      <div class="container pd-150 mg-bt-25 pd-tp-20">
         <div class="dp-flex flex-end">
           <b-field label="Selected graph">
             <b-select v-model="selectedValue" placeholder="Select a name">
@@ -109,6 +109,9 @@ export default {
 <style scoped>
 .pd-150 {
   padding: 150px;
+}
+.pd-tp-20 {
+  padding-top: 20px;
 }
 .mg-bt-25 {
   margin-bottom: 25px;

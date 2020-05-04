@@ -9,6 +9,9 @@
       </b-navbar-item>
     </template>
     <template slot="start">
+      <b-navbar-item href="/#/news">
+        News
+      </b-navbar-item>
       <b-navbar-item tag="router-link" :to="{ path: '/'}">Home</b-navbar-item>
       <b-navbar-item tag="router-link" :to="{ path: '/followers'}">Follower</b-navbar-item>
     </template>

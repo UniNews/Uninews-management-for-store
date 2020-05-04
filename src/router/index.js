@@ -13,6 +13,22 @@ export default new Router({
       // beforeEnter: ifNotAuthenticated,
     },
     {
+      path: '/news',
+      name: 'News',
+      component: () => import('../views/News'),
+      // beforeEnter: ifNotAuthenticated,
+    },
+    {
+      path: '/newsDetail',
+      name: 'NewsDetail',
+      component: () => import('../views/NewsDetail'),
+      // beforeEnter: ifNotAuthenticated,
+    },
+    {
+      path: '/postnews',
+      name: 'PostNews',
+      component: () => import('../views/PostNews')
+    }
       path: '/followers',
       name: 'Followers',
       component: () => import('../views/Followers')
@@ -23,6 +39,5 @@ export default new Router({
       component: () => import('../views/Dashboard'),
       // beforeEnter: ifAuthenticated,
     },
-
   ]
 })
