@@ -4,11 +4,16 @@
       <div class="hero-body">
         <div class="container">
           <div class="search-size">
-            <b-input rounded v-model="query" placeholder="Search name, description..." icon="magnify"></b-input>
+            <b-input
+              rounded
+              v-model="query"
+              placeholder="Search name, description..."
+              icon="magnify"
+            ></b-input>
           </div>
           <div class="card mt-20 pl-10 pr-10">
             <b-table
-              :data="filterFollowings"
+              :data="filterFollowers"
               ref="table"
               paginated
               per-page="10"
@@ -26,11 +31,7 @@
                   label="Display Name"
                   sortable
                 >{{ props.row.displayName }}</b-table-column>
-                <b-table-column
-                  sortable
-                  field="bio"
-                  label="Bio"
-                >{{ props.row.bio }}</b-table-column>
+                <b-table-column sortable field="bio" label="Bio">{{ props.row.bio }}</b-table-column>
                 <b-table-column field="tags" label="Tags">
                   <div v-if="props.row.tags && props.row.tags.length > 0">
                     <b-tag
@@ -48,7 +49,7 @@
                 >{{ new Date(props.row.createdAt).toLocaleDateString() }}</b-table-column>
 
                 <b-table-column label="Detail">
-                  <b-button @click="followingClicked(props.row._id)">
+                  <b-button @click="followerClicked(props.row._id)">
                     <span>
                       <b-icon icon="account-search" size="25"></b-icon>
                     </span>
@@ -79,57 +80,43 @@ import { mapActions, mapGetters } from "vuex";
 import userservice from "@/services/userservice";
 
 export default {
-  name: "Community",
+  name: "Followers",
   data() {
     return {
-      followings: [],
+      followers: [],
       query: "",
-      isLoading: false,
+      isLoading: false
     };
   },
   methods: {
     ...mapGetters({
-      getUser: 'Auth/getUser'
+      getUser: "Auth/getUser"
     }),
-    async fetchFollowings() {
+    async fetchFollowers() {
       this.isLoading = true;
-      this.followings = [];
-      for(let i in this.getUser().followings) {
-        const user = await userservice.getUserById(this.getUser().followings[i]);
-        this.followings.push(user);
-      }
+      this.followers = [];
+      const user = await userservice.getFollowers(this.getUser()._id);
+      this.followers = user.data.followers;
       this.isLoading = false;
     },
-    followingClicked(id) {
-      alert(`Following ID: ${id} clicked !`);
+    followerClicked(id) {
+      alert(`Follower ID: ${id} clicked !`);
       // this.$router.push({ name: "Community", params: { newsId: id } });
     }
   },
   mounted() {
-    this.fetchFollowings();
+    this.fetchFollowers();
   },
   computed: {
-    filterFollowings() {
-      return this.followings.filter(item => {
+    filterFollowers() {
+      return this.followers.filter(item => {
         if (this.query !== "") {
           return `${item.displayName.toLowerCase()}${item.bio.toLowerCase()}`.match(
             this.query.toLowerCase()
           );
         } else return true;
       });
-    },
+    }
   }
 };
 </script>
-
-<style scoped>
-.mt-20 {
- margin-top: 20px;
-}
-.pl-10 {
-  padding-left: 10px;
-}
-.pr-10 {
-  padding-right: 10px;
-}
-</style>

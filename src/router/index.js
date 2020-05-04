@@ -4,32 +4,8 @@ import store from '../store/modules/auth'
 
 Vue.use(Router)
 
-// const ifNotAuthenticated = (to, from, next) => {
-//   if (!store.state.user) {
-//     console.log(store.state.user)
-//     next()
-//     return
-//   }
-//   next('/')
-// }
-
-// const ifAuthenticated = (to, from, next) => {
-//   if (store.state.user) {
-//     console.log(store.state.user)
-//     next()
-//     return
-//   }
-//   next('/login')
-// }
-
 export default new Router({
   routes: [
-    {
-      path: '/',
-      name: 'Dashboard',
-      component: () => import('../views/Dashboard'),
-      // beforeEnter: ifAuthenticated,
-    },
     {
       path: '/login',
       name: 'Login',
@@ -37,14 +13,16 @@ export default new Router({
       // beforeEnter: ifNotAuthenticated,
     },
     {
-      path: '/following',
-      name: 'Following',
-      component: () => import('../views/Following'),
+      path: '/followers',
+      name: 'Followers',
+      component: () => import('../views/Followers')
     },
     {
-      path: '/follower',
-      name: 'Follower',
-      component: () => import('../views/Follower')
-    }
+      path: '/',
+      name: 'Dashboard',
+      component: () => import('../views/Dashboard'),
+      // beforeEnter: ifAuthenticated,
+    },
+
   ]
 })

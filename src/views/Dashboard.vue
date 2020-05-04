@@ -99,6 +99,7 @@ export default {
     })
   },
   mounted() {
+    console.log("TEST");
     this.fetchUsers();
   }
 };
