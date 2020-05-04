@@ -123,11 +123,6 @@ export default {
           );
         } else return this.news;
       });
-    },
-    displayCard() {
-      return this.isCardModalActive
-        ? "modal is-active modal-background"
-        : "modal modal-background";
     }
   }
 };

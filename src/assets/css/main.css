@@ -25,3 +25,8 @@ html {
 .end {
     justify-content: flex-end !important;
 }
+
+.news-image {
+    height: 250px;
+    object-fit: contain;
+}

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from '../store/modules/auth'
 
 Vue.use(Router)
 
@@ -28,7 +27,8 @@ export default new Router({
       path: '/postnews',
       name: 'PostNews',
       component: () => import('../views/PostNews')
-    }
+    },
+    {
       path: '/followers',
       name: 'Followers',
       component: () => import('../views/Followers')

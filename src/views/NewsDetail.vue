@@ -2,7 +2,7 @@
   <div class="container mb-20 mt-20">
     <div class="card">
       <div class="card-image is-centered columns pt-20">
-        <img class="avatar shadow" :src="news.imageURL" />
+        <img class="news-image shadow" :src="news.imageURL" />
       </div>
       <div class="card-content">
         <div class="content">
@@ -290,7 +290,6 @@ export default {
     return {
       news: {},
       activeTab: 0,
-
       filteredTags: data,
       isLoading: false,
       views: [],
@@ -368,16 +367,7 @@ export default {
 </script>
 
 <style>
-.mg-10 {
-  margin-right: 10px;
-}
 ul.pagination-list {
   margin: 0px;
-}
-.mb-20 {
-  margin-bottom: 20px;
-}
-.mt-20 {
-  margin-top: 20px;
 }
 </style>
