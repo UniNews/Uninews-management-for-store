@@ -9,7 +9,7 @@ export default {
         return axios.get(`${API_URL}/articles/${id}`)
     },
     postNews: async (data) => {
-        const result = await axios.post(`${API_URL}/articles`,data)
+        const result = await axios.post(`${API_URL}/articles`, data)
         return result
     },
     uploadNewsImage: (formData) => {
@@ -26,7 +26,7 @@ export default {
         const data = axios.delete(`${API_URL}/articles/${id}`)
         return data
     },
-    deleteComment:(id, cid)=> {
+    deleteComment: (id, cid) => {
         const data = axios.delete(`${API_URL}/articles/${id}/comments/${cid}`)
         return data
     }
