@@ -36,5 +36,15 @@ export default new Router({
       component: () => import('../views/Login'),
       // beforeEnter: ifNotAuthenticated,
     },
+    {
+      path: '/following',
+      name: 'Following',
+      component: () => import('../views/Following'),
+    },
+    {
+      path: '/follower',
+      name: 'Follower',
+      component: () => import('../views/Follower')
+    }
   ]
 })
