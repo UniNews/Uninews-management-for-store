@@ -67,31 +67,32 @@
                       </template>
                     </b-taginput>
                   </b-field>
-                  <b-field v-if="news.title && news.title.length!==0" label="Title">
+                  <b-field
+                    :type="validateTitle!== '' ?'is-danger' : null"
+                    :message="validateTitle"
+                    label="Title"
+                  >
                     <b-input v-model="news.title" placeholder="Title" maxlength="100"></b-input>
                   </b-field>
-                  <b-field v-else label="Title"
-                    type="is-danger"
-                    message="title not be null">
+                  <b-field
+                    :type="validateDescription!== '' ?'is-danger' : null"
+                    :message="validateDescription"
+                    label="Description"
+                  >
                     <b-input
-                      v-model="news.title"
-                      maxlength="100">
-                    </b-input>
-                  </b-field>
-                  <b-field v-if="news.description && news.description.length!==0" label="Description">
-                    <b-input type="textarea" v-model="news.description" maxlength="1000" placeholder="Description"></b-input>
-                  </b-field>
-                  <b-field v-else label="Description"
-                    type="is-danger"
-                    message="description not be null">
-                    <b-input
+                      type="textarea"
                       v-model="news.description"
-                      maxlength="1000">
-                    </b-input>
+                      maxlength="1000"
+                      placeholder="Description"
+                    ></b-input>
                   </b-field>
-                  <div v-if="news.description && news.title" class="buttons end pt-10">
-                    <b-button v-if="news.description.length===0 || news.title.length===0" type="is-success" icon-right="check" disabled>Save</b-button>
-                    <b-button v-else type="is-success" @click="putNews(news)" icon-right="check">Save</b-button>
+                  <div class="buttons end pt-10">
+                    <b-button
+                      @click="putNews()"
+                      type="is-success"
+                      icon-right="check"
+                      :disabled="validateDescription !== '' || validateTitle!= ''"
+                    >Save</b-button>
                   </div>
                 </b-tab-item>
                 <b-tab-item>
@@ -317,7 +318,7 @@ export default {
       views: [],
       likes: [],
       comments: [],
-      data: ["club", "promotion", "lost-found"],
+      data: ["club", "promotion", "lost-found"]
     };
   },
   async mounted() {
@@ -336,6 +337,19 @@ export default {
         return convertTimestamptoDate(this.news.createdAt);
       },
       set(newVal) {}
+    },
+    validateTitle() {
+      if (typeof this.news.title !== "undefined" && this.news.title.length <= 0)
+        return "Title must be more than 0 chars long";
+      else return "";
+    },
+    validateDescription() {
+      if (
+        typeof this.news.description !== "undefined" &&
+        this.news.description.length <= 0
+      )
+        return "Description must be more than 0 chars long";
+      else return "";
     }
   },
   methods: {
@@ -372,23 +386,25 @@ export default {
       const result3 = await newsService.getCommentsById(this.newsId);
       this.comments = [...result3.data];
     },
-    async putNews(news) {
-      const { title, tags, description, newsType, _id } = news;
-      this.isLoading = true;
-      try {
-        await newsService.putArticles(
-          {
-            title: title,
-            newsType: newsType,
-            tags: [...tags],
-            description: description
-          },
-          _id
-        );
-      } catch (err) {
-        console.log(err.response);
-      } finally {
-        this.isLoading = false;
+    async putNews() {
+      if (this.validateTitle === "" && this.validateDescription === "") {
+        const { title, tags, description, newsType, _id } = this.news;
+        this.isLoading = true;
+        try {
+          await newsService.putArticles(
+            {
+              title: title,
+              newsType: newsType,
+              tags: [...tags],
+              description: description
+            },
+            _id
+          );
+        } catch (err) {
+          console.log(err.response);
+        } finally {
+          this.isLoading = false;
+        }
       }
     }
   }

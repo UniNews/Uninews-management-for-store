@@ -1,88 +1,65 @@
 <template>
   <section class="hero is-small">
+    <b-loading :is-full-page="true" :active.sync="isLoading" />
     <div class="hero-body">
       <div class="container">
         <div class="b-shadow pd-18 bg-white">
+          <b-field label="Tags">
+            <b-taginput
+              v-model="tags"
+              :data="filteredTags"
+              autocomplete
+              icon="label"
+              placeholder="Add a tag"
+              maxtags="2"
+              @typing="getFilteredTags"
+            >
+              <template slot-scope="props">
+                <strong>{{props.option}}</strong>
+              </template>
+              <template slot="empty">There are no items</template>
+            </b-taginput>
+          </b-field>
           <div>
-            <b-field label="ArticleType">
-              <b-select v-model="selectedValue" placeholder="Select an article-type" expanded>
-                <option value="news">News</option>
-                <option value="community">Community</option>
-              </b-select>
+            <b-field
+              label="Title"
+              :type="this.titleError !== ''? 'is-danger' : null"
+              :message="this.titleError"
+            >
+              <b-input v-model="title" maxlength="100"></b-input>
             </b-field>
-            <b-field label="Tags">
-              <b-taginput
-                v-model="tags"
-                :data="filteredTags"
-                autocomplete
-                icon="label"
-                placeholder="Add a tag"
-                maxtags="2"
-                @typing="getFilteredTags"
-              >
-                <template slot-scope="props">
-                  <strong>{{props.option}}</strong>
-                </template>
-                <template slot="empty">There are no items</template>
-              </b-taginput>
-            </b-field>
-            <div v-show="selectedValue==='news'">
-              <b-field v-if="title.length!==0" label="Title">
-                <b-input v-model="title" maxlength="100" />
-              </b-field>
-              <b-field v-else label="Title"
-                type="is-danger"
-                message="title not be null">
-                <b-input
-                  v-model="title"
-                  maxlength="100">
-                </b-input>
-              </b-field>
+          </div>
+          <b-field label="NewsType">
+            <b-select v-model="newsTypeValue" placeholder="Select an article-type" expanded>
+              <option v-for="option in data" :value="option" :key="option">{{ option }}</option>
+            </b-select>
+          </b-field>
+          <b-field class="file">
+            <b-upload accept="image/*" v-model="file" @input="onImageSelected">
+              <a class="button is-primary">
+                <b-icon icon="upload"></b-icon>
+                <span>Upload Image</span>
+              </a>
+            </b-upload>
+            <div v-if="this.file">
+              <span class="file-name">{{ this.file.name }}</span>
             </div>
-            <b-field v-show="selectedValue==='news'" label="NewsType">
-              <b-select v-model="newsTypeValue" placeholder="Select an article-type" expanded>
-                <option v-for="option in data" :value="option" :key="option">{{ option }}</option>
-              </b-select>
-            </b-field>
-            <b-field v-show="selectedValue==='news'" class="file">
-              <b-upload v-model="file" @input="onImageSelected">
-                <a class="button is-primary">
-                  <b-icon icon="upload"></b-icon>
-                  <span>Upload Image</span>
-                </a>
-              </b-upload>
-              <span class="file-name" v-if="file">{{ file.name }}</span>
-              <span class="file-name tx-red" v-else>
-                file not be null
-                <b-icon
-                icon="alert-circle"
-                type="is-danger"
-                size="is-small">
-                </b-icon>
-              </span>
-            </b-field>
-            <b-field v-if="description.length!==0" label="Description">
-              <b-input v-model="description" maxlength="1000" type="textarea" class="chat-area" />
-            </b-field>
-            <b-field v-else label="Description"
-              type="is-danger"
-              message="description not be null">
-              <b-input
-                v-model="description"
-                maxlength="1000">
-              </b-input>
-            </b-field>
-            <div v-if="selectedValue==='news'">
-              <b-button v-if="description.length===0 || title.length===0 || file===null" disabled>Post</b-button>
-              <b-button v-else @click="postArticles()">Post</b-button>
-            </div>
-            <div v-else>
-              <b-button v-if="description.length===0" disabled>Post</b-button>
-              <b-button v-else @click="postArticles()">Post</b-button>
-            </div>
+            <span class="file-name tx-red" v-if="this.imageError !== ''">
+              {{this.imageError}}
+              <b-icon icon="alert-circle" type="is-danger" size="is-small"></b-icon>
+            </span>
+          </b-field>
+          <b-field
+            label="Description"
+            :type="this.descriptionError !== ''? 'is-danger' : null"
+            :message="this.descriptionError"
+          >
+            <b-input v-model="description" maxlength="1000" type="textarea" class="chat-area" />
+          </b-field>
+          <div>
+            <b-button type="is-success" @click="postArticles()">Post</b-button>
           </div>
         </div>
-        <b-loading :is-full-page="true" :active.sync="isLoading" />
       </div>
     </div>
   </section>
@@ -103,34 +80,69 @@ export default {
   name: "PostNews",
   data() {
     return {
-      selectedValue: "community",
       newsTypeValue: "club",
       data: ["club", "promotion", "lost-found", "university"],
       file: null,
-      fileImageUrl: null,
+      fileImageUrl: "",
       tags: [],
       description: "",
       title: "",
       isLoading: false,
-      filteredTags: data
+      filteredTags: data,
+      /* for validations */
+      titleError: "",
+      descriptionError: "",
+      imageError: ""
     };
   },
+  watch: {
+    title: function(val) {
+      if (val.length <= 0)
+        this.titleError = "Title must be more than 0 chars long";
+      else this.titleError = "";
+    },
+    description: function(val) {
+      if (val.length <= 0)
+        this.descriptionError = "Title must be more than 0 chars long";
+      else this.descriptionError = "";
+    },
+    file: function(val) {
+      if (!val) this.imageError = "Image must not be null";
+      else this.imageError = "";
+    }
+  },
   methods: {
-    postArticles() {
-      var vm = this;
-      this.isLoading = true;
-      this.onImageUpload().then(() => {
-        newservice.postNews({
-          articleType: this.selectedValue,
+    async postArticles() {
+      let error = false;
+      if (this.title.length <= 0) {
+        error = true;
+        this.titleError = "Title must be more than 0 chars long";
+      }
+      if (this.description.length <= 0) {
+        error = true;
+        this.descriptionError = "Description must be more than 0 chars long";
+      }
+      if (!this.file) {
+        error = true;
+        this.imageError = "Image must not be null";
+      }
+      if (!error) {
+        this.isLoading = true;
+        await this.onImageUpload();
+        const res = await newservice.postNews({
+          articleType: "news",
           description: this.description,
           tags: this.tags,
           newsType: this.newsTypeValue,
           title: this.title,
           imageURL: this.fileImageUrl
         });
-        vm.resetFooter();
-        vm.isLoading = false;
-      });
+        this.isLoading = false;
+        this.$router.push({
+          name: "NewsDetail",
+          params: { newsId: res.data._id }
+        });
+      }
     },
     addToArray(value) {
       const index = this.tags.indexOf(value);
@@ -153,15 +165,6 @@ export default {
         let result = await newservice.uploadNewsImage(formData);
         this.fileImageUrl = process.env.VUE_APP_API_URL + result.data.uri;
       }
-    },
-    resetFooter() {
-      this.selectedValue = "community";
-      this.newsTypeValue = "club";
-      this.file = null;
-      this.fileImageUrl = null;
-      this.tags = [];
-      this.description = "";
-      this.title = "";
     },
     getFilteredTags(text) {
       this.filteredTags = data.filter(option => {

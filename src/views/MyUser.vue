@@ -35,30 +35,39 @@
                     <b-icon icon="information-outline"></b-icon>
                     <span>Basic information</span>
                   </template>
-                  <b-field label="Display name">
-                    <b-input v-model="user.displayName"></b-input>
+                  <b-field
+                    :type="validateDisplayName !== '' ? 'is-danger' : null"
+                    :message="validateDisplayName"
+                    label="Display name"
+                  >
+                    <b-input maxlength="20" v-model="user.displayName"></b-input>
                   </b-field>
                   <b-field label="Bio">
-                    <b-input v-model="user.bio"></b-input>
+                    <b-input maxlength="10" v-model="user.bio"></b-input>
                   </b-field>
                   <div v-if="user.role==='store'">
                     <b-field label="Email">
-                      <b-input v-model="user.email"></b-input>
+                      <b-input maxlength="50" v-model="user.email"></b-input>
                     </b-field>
                     <b-field label="First name">
-                      <b-input v-model="user.firstName"></b-input>
+                      <b-input maxlength="50" v-model="user.firstName"></b-input>
                     </b-field>
                     <b-field label="Last name">
-                      <b-input v-model="user.lastName"></b-input>
+                      <b-input maxlength="50" v-model="user.lastName"></b-input>
                     </b-field>
                     <b-field label="Mobile phone">
-                      <b-input v-model="user.mobilePhone"></b-input>
+                      <b-input maxlength="15" v-model="user.mobilePhone"></b-input>
                     </b-field>
                     <b-field label="Contacts">
                       <b-input v-model="user.contacts"></b-input>
                     </b-field>
                     <div class="buttons end pt-10">
-                      <b-button type="is-success" @click="putUser()" icon-right="account-check">Save</b-button>
+                      <b-button
+                        type="is-success"
+                        :disabled="this.validateDisplayName !== ''"
+                        @click="putUser()"
+                        icon-right="account-check"
+                      >Save</b-button>
                     </div>
                   </div>
                 </b-tab-item>
@@ -236,43 +245,45 @@ export default {
       this.isLoading = false;
     },
     async putUser() {
-      const { role } = this.user;
-      if (role === "user") {
-        const { displayName, bio, _id } = this.user;
-        this.isLoading = true;
-        await userService.putUser(
-          {
-            displayName: displayName,
-            bio: bio
-          },
-          _id
-        );
-        this.fetchUser(_id);
-      } else if (role === "store") {
-        const {
-          displayName,
-          bio,
-          _id,
-          email,
-          firstName,
-          lastName,
-          mobilePhone,
-          contacts
-        } = this.user;
-        this.isLoading = true;
-        await userService.putUser(
-          {
+      if (this.validateDisplayName === "") {
+        const { role } = this.user;
+        if (role === "user") {
+          const { displayName, bio, _id } = this.user;
+          this.isLoading = true;
+          await userService.putUser(
+            {
+              displayName: displayName,
+              bio: bio
+            },
+            _id
+          );
+          this.fetchUser(_id);
+        } else if (role === "store") {
+          const {
             displayName,
             bio,
+            _id,
             email,
             firstName,
             lastName,
             mobilePhone,
             contacts
-          },
-          _id
-        );
-        this.fetchUser(_id);
+          } = this.user;
+          this.isLoading = true;
+          await userService.putUser(
+            {
+              displayName,
+              bio,
+              email,
+              firstName,
+              lastName,
+              mobilePhone,
+              contacts
+            },
+            _id
+          );
+          this.fetchUser(_id);
+        }
       }
     },
     resetUser() {
@@ -290,6 +301,14 @@ export default {
         return convertTimestamptoDate(this.user.createdAt);
       },
       set(newVal) {}
+    },
+    validateDisplayName() {
+      if (
+        typeof this.user.displayName !== "undefined" &&
+        this.user.displayName.length <= 2
+      )
+        return "Display name must be more than 2 chars long";
+      else return "";
     }
   },
   mounted() {
