@@ -100,8 +100,7 @@ export default {
       this.isLoading = false;
     },
     followerClicked(id) {
-      alert(`Follower ID: ${id} clicked !`);
-      // this.$router.push({ name: "Community", params: { newsId: id } });
+      this.$router.push({ name: "User", params: { userId: id } });
     }
   },
   mounted() {
