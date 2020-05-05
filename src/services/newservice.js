@@ -22,7 +22,7 @@ export default {
         const data = axios.get(`${API_URL}/articles/${id}/comments`)
         return data
     },
-    deleteArticles: (id) => {
+    deleteArticle: (id) => {
         const data = axios.delete(`${API_URL}/articles/${id}`)
         return data
     },

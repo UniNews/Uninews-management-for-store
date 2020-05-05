@@ -27,7 +27,11 @@
                   <b-field label="Date">
                     <b-input disabled v-model="createdAt" placeholder="Date"></b-input>
                   </b-field>
+                  <div class="buttons end pt-10">
+                    <b-button type="is-danger" @click="deleteArticle()" icon-right="delete">Delete</b-button>
+                  </div>
                 </b-tab-item>
+
                 <b-tab-item>
                   <template slot="header">
                     <b-icon icon="information-outline"></b-icon>
@@ -390,22 +394,24 @@ export default {
       if (this.validateTitle === "" && this.validateDescription === "") {
         const { title, tags, description, newsType, _id } = this.news;
         this.isLoading = true;
-        try {
-          await newsService.putArticles(
-            {
-              title: title,
-              newsType: newsType,
-              tags: [...tags],
-              description: description
-            },
-            _id
-          );
-        } catch (err) {
-          console.log(err.response);
-        } finally {
-          this.isLoading = false;
-        }
+        await newsService.putArticles(
+          {
+            title: title,
+            newsType: newsType,
+            tags: [...tags],
+            description: description
+          },
+          _id
+        );
+        this.isLoading = false;
       }
+    },
+    async deleteArticle() {
+      const { _id } = this.news;
+      this.isLoading = true;
+      await newsService.deleteArticle(_id);
+      this.isLoading = false;
+      this.$router.push({ path: "/news" });
     }
   }
 };
