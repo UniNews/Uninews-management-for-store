@@ -10,6 +10,9 @@
             icon="magnify"
           ></b-input>
         </div>
+        <div class="columns end">
+          <b-button class="mt-20 mr-10" type="is-success" icon-right="database-plus">Create news</b-button>
+        </div>
         <div class="card mt-20 pl-10 pr-10">
           <b-table
             :data="filterNews"
@@ -44,7 +47,7 @@
               <b-table-column label="Detail">
                 <b-button @click="newsClicked(props.row._id)">
                   <span>
-                    <b-icon icon="account-search" size="25"></b-icon>
+                    <b-icon icon="database-search" size="25"></b-icon>
                   </span>
                 </b-button>
               </b-table-column>
