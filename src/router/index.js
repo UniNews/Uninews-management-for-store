@@ -39,5 +39,10 @@ export default new Router({
       component: () => import('../views/Dashboard'),
       // beforeEnter: ifAuthenticated,
     },
+    {
+      path: '/user',
+      name: 'User',
+      component: () => import('../views/user/User.vue')
+    }
   ]
 })
