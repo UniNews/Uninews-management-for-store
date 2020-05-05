@@ -21,7 +21,7 @@
                   <b-input disabled v-model="user.role" placeholder="Role"></b-input>
                 </b-field>
                 <b-field label="Active">
-                  <b-switch :value="user.active" @input="editUserRole(user)" type="is-success"></b-switch>
+                  <b-switch disabled :value="user.active" type="is-success"></b-switch>
                 </b-field>
                 <b-field label="Created date">
                   <b-input disabled v-model="createdAt" placeholder="Created at"></b-input>
@@ -33,30 +33,27 @@
                   <span>Basic information</span>
                 </template>
                 <b-field label="Display name">
-                  <b-input v-model="user.displayName" placeholder="Display name"></b-input>
+                  <b-input disabled v-model="user.displayName"></b-input>
                 </b-field>
                 <b-field label="Bio">
-                  <b-input v-model="user.bio" placeholder="Bio"></b-input>
+                  <b-input v-model="user.bio" disabled></b-input>
                 </b-field>
                 <div v-if="user.role==='store'">
                   <b-field label="Email">
-                    <b-input v-model="user.email" placeholder="Email"></b-input>
+                    <b-input v-model="user.email" disabled></b-input>
                   </b-field>
                   <b-field label="First name">
-                    <b-input v-model="user.firstName" placeholder="FirstName"></b-input>
+                    <b-input v-model="user.firstName" disabled></b-input>
                   </b-field>
                   <b-field label="Last name">
-                    <b-input v-model="user.lastName" placeholder="Lastname"></b-input>
+                    <b-input v-model="user.lastName" disabled></b-input>
                   </b-field>
                   <b-field label="Mobile phone">
-                    <b-input v-model="user.mobilePhone" placeholder="Mobile phone"></b-input>
+                    <b-input v-model="user.mobilePhone" disabled></b-input>
                   </b-field>
                   <b-field label="Contacts">
-                    <b-input v-model="user.contacts" placeholder="Contacts"></b-input>
+                    <b-input v-model="user.contacts" disabled></b-input>
                   </b-field>
-                </div>
-                <div class="buttons end pt-10">
-                  <b-button type="is-success" @click="putUser(user)" icon-right="account-check">Save</b-button>
                 </div>
               </b-tab-item>
               <b-tab-item>
@@ -212,69 +209,28 @@ export default {
     },
     detailClicked(id) {
       this.setUser(id);
-      // this.$router.replace({name: 'User', params: {userId: id} });
     },
-    setFollowings(users) {
-      for (let index in users) {
-        let followingsId = users[index];
-        userService
-          .getUserById(followingsId)
-          .then(res => {
-            this.followings.push(res);
-          })
-          .catch(err => {
-            console.log(err.response);
-          });
-      }
+    async setFollowings(id) {
+      const res = await userService.getFollowings(id);
+      this.followings = res.data.followings;
     },
-    setFollowers(users) {
-      for (let index in users) {
-        let followersId = users[index];
-        userService
-          .getUserById(followersId)
-          .then(res => {
-            this.followers.push(res);
-          })
-          .catch(err => {
-            console.log(err.response);
-          });
-      }
-      this.isLoading = false;
+    async setFollowers(id) {
+      const res = await userService.getFollowers(id);
+      this.followers = res.data.followers;
     },
-    setUser(userId) {
+    async setUser(userId) {
       this.isLoading = true;
       this.resetUser();
-      userService.getUserById(userId).then(res => {
-        this.user = { ...res };
-        this.setFollowings(this.user.followings);
-        this.setFollowers(this.user.followers);
-      });
+      const res = await userService.getUserById(userId);
+      this.user = res.data;
+      await this.setFollowings(this.user._id);
+      await this.setFollowers(this.user._id);
+      this.isLoading = false;
     },
     resetUser() {
       this.user = {};
       this.followings = [];
       this.followers = [];
-    },
-    async putUser(user) {
-      const { displayName, bio, _id } = user
-      this.isLoading=true
-      await userService.putUser({
-        'displayName':displayName,
-        'bio':bio
-      },_id)
-      this.setUser(this.$route.params.userId)
-      this.isLoading=false
-    },
-    async editUserRole(user) {
-      const { active, _id } = user
-      this.isLoading=true
-      if(active) {
-        await userService.banUser(_id)
-      }else {
-        await userService.unBanUser(_id)
-      }
-      this.setUser(this.$route.params.userId)
-      this.isLoading=false
     }
   },
   computed: {
@@ -286,11 +242,9 @@ export default {
     }
   },
   mounted() {
-    const userId = this.$route.params.userId
-    if(userId!==undefined)
-      this.setUser(this.$route.params.userId);
-    else
-      this.$router.back()
+    const userId = this.$route.params.userId;
+    if (userId !== undefined) this.setUser(this.$route.params.userId);
+    else this.$router.back();
   }
 };
 </script>

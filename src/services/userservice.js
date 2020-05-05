@@ -16,8 +16,7 @@ export default {
         return axios.get(`${API_URL}/profile`)
     },
     getUserById: (id) => {
-        return axios.get(`${API_URL}/users/${id}`).then(response => response.data)
-            .catch(error => error)
+        return axios.get(`${API_URL}/users/${id}`)
     },
     putUser: (json, uid) => {
         return axios.put(`${API_URL}/users/${uid}`, json, {
@@ -30,5 +29,8 @@ export default {
     },
     getFollowers: (id) => {
         return axios.get(`${API_URL}/users/${id}/followers`)
+    },
+    getFollowings: (id) => {
+        return axios.get(`${API_URL}/users/${id}/followings`)
     }
 }
