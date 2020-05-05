@@ -11,7 +11,12 @@
           ></b-input>
         </div>
         <div class="columns end">
-          <b-button class="mt-20 mr-10" type="is-success" icon-right="database-plus">Create news</b-button>
+          <b-button
+            @click="goCreateNews()"
+            class="mt-20 mr-10"
+            type="is-success"
+            icon-right="database-plus"
+          >Create news</b-button>
         </div>
         <div class="card mt-20 pl-10 pr-10">
           <b-table
@@ -109,6 +114,9 @@ export default {
     },
     newsClicked(id) {
       this.$router.push({ name: "NewsDetail", params: { newsId: id } });
+    },
+    goCreateNews() {
+      this.$router.push({ name: "PostNews" });
     },
     ...mapGetters({
       getUser: "Auth/getUser"
