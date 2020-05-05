@@ -14,8 +14,8 @@
       <b-navbar-item href="/#/followers">Followers</b-navbar-item>
     </template>
     <template slot="end">
-      <b-navbar-item tag="div">
-        <div v-if="$route.name !== 'Login'">
+      <b-navbar-item class='profile' tag="div">
+        <div v-if="$route.name !== 'Login'" @click='profileClicked()'>
           <img :src="getUser()?getUser().avatarURL:null" class="image-avatar" />
           {{ getUser()?getUser().displayName:null }}
         </div>
@@ -40,7 +40,10 @@ export default {
     },
     ...mapGetters({
       getUser: "Auth/getUser"
-    })
+    }),
+    profileClicked() {
+      this.$router.push({ name: 'User', params: { userId: this.getUser()._id }});
+    }
   }
 };
 </script>
@@ -48,5 +51,11 @@ export default {
 .image-avatar {
   margin: -6px;
   border-radius: 22px;
+}
+.profile {
+  cursor: pointer;
+}
+.profile:hover {
+  background-color: rgb(250, 250, 250);
 }
 </style>
