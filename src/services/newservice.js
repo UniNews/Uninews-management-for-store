@@ -42,4 +42,9 @@ export default {
         const data = axios.get(`${API_URL}/articles/${id}/comments`)
         return data
     },
+    putArticles: (json, id) => {
+        return axios.put(`${API_URL}/articles/${id}`, json, {
+            headers: { 'Content-Type': 'application/json' }
+        })
+    },
 }
