@@ -1,15 +1,13 @@
 <template>
   <div>
-    <section class="hero is-small">
+    <div v-if="isLoading">
+      <b-loading :is-full-page="true" :active.sync="isLoading" />
+    </div>
+    <section v-else class="hero is-small">
       <div class="hero-body">
         <div class="container">
           <div class="search-size">
-            <b-input
-              rounded
-              v-model="query"
-              placeholder="Search name, description..."
-              icon="magnify"
-            ></b-input>
+            <b-input rounded v-model="query" placeholder="Search name..." icon="magnify"></b-input>
           </div>
           <div class="card mt-20 pl-10 pr-10">
             <b-table
@@ -31,23 +29,18 @@
                   label="Display Name"
                   sortable
                 >{{ props.row.displayName }}</b-table-column>
-                <b-table-column sortable field="bio" label="Bio">{{ props.row.bio }}</b-table-column>
-                <b-table-column field="tags" label="Tags">
-                  <div v-if="props.row.tags && props.row.tags.length > 0">
-                    <b-tag
-                      type="is-primary"
-                      :key="index"
-                      v-for="(tag, index) in props.row.tags"
-                      rounded
-                    >{{tag}}</b-tag>
-                  </div>
-                </b-table-column>
+
+                <b-table-column sortable field="role" label="Role">{{ props.row.role }}</b-table-column>
                 <b-table-column
                   sortable
                   field="createdAt"
                   label="Date"
                 >{{ new Date(props.row.createdAt).toLocaleDateString() }}</b-table-column>
-
+                <b-table-column sortable field="active" label="Status">
+                  <b-tag
+                    :class="activeTag(props.row.active)"
+                  >{{props.row.active ? 'activated' : 'banned'}}</b-tag>
+                </b-table-column>
                 <b-table-column label="Detail">
                   <b-button @click="followerClicked(props.row._id)">
                     <span>
@@ -70,7 +63,6 @@
           </div>
         </div>
       </div>
-      <b-loading :is-full-page="true" :active.sync="isLoading" />
     </section>
   </div>
 </template>
@@ -92,6 +84,10 @@ export default {
     ...mapGetters({
       getUser: "Auth/getUser"
     }),
+    activeTag(isActive) {
+      if (isActive) return "is-success";
+      else return "is-danger";
+    },
     async fetchFollowers() {
       this.isLoading = true;
       this.followers = [];

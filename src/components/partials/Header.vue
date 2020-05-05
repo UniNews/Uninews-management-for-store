@@ -14,8 +14,8 @@
       <b-navbar-item href="/#/followers">Followers</b-navbar-item>
     </template>
     <template slot="end">
-      <b-navbar-item class='profile' tag="div">
-        <div v-if="$route.name !== 'Login'" @click='profileClicked()'>
+      <b-navbar-item class="profile" tag="div">
+        <div v-if="$route.name !== 'Login'" @click="profileClicked()">
           <img :src="getUser()?getUser().avatarURL:null" class="image-avatar" />
           {{ getUser()?getUser().displayName:null }}
         </div>
@@ -42,7 +42,9 @@ export default {
       getUser: "Auth/getUser"
     }),
     profileClicked() {
-      this.$router.push({ name: 'User', params: { userId: this.getUser()._id }});
+      this.$router.push({
+        name: "MyUser"
+      });
     }
   }
 };

@@ -9,19 +9,16 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: () => import('../views/Login'),
-      // beforeEnter: ifNotAuthenticated,
     },
     {
       path: '/news',
       name: 'News',
       component: () => import('../views/News'),
-      // beforeEnter: ifNotAuthenticated,
     },
     {
       path: '/newsDetail',
       name: 'NewsDetail',
       component: () => import('../views/NewsDetail'),
-      // beforeEnter: ifNotAuthenticated,
     },
     {
       path: '/postnews',
@@ -37,12 +34,16 @@ export default new Router({
       path: '/',
       name: 'Dashboard',
       component: () => import('../views/Dashboard'),
-      // beforeEnter: ifAuthenticated,
     },
     {
       path: '/user',
       name: 'User',
-      component: () => import('../views/user/User.vue')
+      component: () => import('../views/User.vue')
+    },
+    {
+      path: '/myUser',
+      name: 'MyUser',
+      component: () => import('../views/MyUser.vue')
     }
   ]
 })
