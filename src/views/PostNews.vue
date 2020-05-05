@@ -26,9 +26,19 @@
                 <template slot="empty">There are no items</template>
               </b-taginput>
             </b-field>
-            <b-field v-show="selectedValue==='news'" label="Title">
-              <b-input v-model="title" maxlength="200" />
-            </b-field>
+            <div v-show="selectedValue==='news'">
+              <b-field v-if="title.length!==0" label="Title">
+                <b-input v-model="title" maxlength="100" />
+              </b-field>
+              <b-field v-else label="Title"
+                type="is-danger"
+                message="title not be null">
+                <b-input
+                  v-model="title"
+                  maxlength="100">
+                </b-input>
+              </b-field>
+            </div>
             <b-field v-show="selectedValue==='news'" label="NewsType">
               <b-select v-model="newsTypeValue" placeholder="Select an article-type" expanded>
                 <option v-for="option in data" :value="option" :key="option">{{ option }}</option>
@@ -42,11 +52,34 @@
                 </a>
               </b-upload>
               <span class="file-name" v-if="file">{{ file.name }}</span>
+              <span class="file-name tx-red" v-else>
+                file not be null
+                <b-icon
+                icon="alert-circle"
+                type="is-danger"
+                size="is-small">
+                </b-icon>
+              </span>
             </b-field>
-            <b-field label="Description">
-              <b-input v-model="description" maxlength="200" type="textarea" class="chat-area" />
+            <b-field v-if="description.length!==0" label="Description">
+              <b-input v-model="description" maxlength="1000" type="textarea" class="chat-area" />
             </b-field>
-            <b-button @click="postArticles()">Post</b-button>
+            <b-field v-else label="Description"
+              type="is-danger"
+              message="description not be null">
+              <b-input
+                v-model="description"
+                maxlength="1000">
+              </b-input>
+            </b-field>
+            <div v-if="selectedValue==='news'">
+              <b-button v-if="description.length===0 || title.length===0 || file===null" disabled>Post</b-button>
+              <b-button v-else @click="postArticles()">Post</b-button>
+            </div>
+            <div v-else>
+              <b-button v-if="description.length===0" disabled>Post</b-button>
+              <b-button v-else @click="postArticles()">Post</b-button>
+            </div>
           </div>
         </div>
         <b-loading :is-full-page="true" :active.sync="isLoading" />
@@ -71,7 +104,7 @@ export default {
   data() {
     return {
       selectedValue: "community",
-      newsTypeValue: null,
+      newsTypeValue: "club",
       data: ["club", "promotion", "lost-found", "university"],
       file: null,
       fileImageUrl: null,
@@ -123,7 +156,7 @@ export default {
     },
     resetFooter() {
       this.selectedValue = "community";
-      this.newsTypeValue = null;
+      this.newsTypeValue = "club";
       this.file = null;
       this.fileImageUrl = null;
       this.tags = [];
@@ -152,5 +185,8 @@ export default {
 }
 .pd-18 {
   padding: 18px;
+}
+.tx-red {
+  color: red;
 }
 </style>

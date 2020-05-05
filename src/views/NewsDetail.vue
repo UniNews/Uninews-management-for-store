@@ -67,14 +67,31 @@
                       </template>
                     </b-taginput>
                   </b-field>
-                  <b-field label="Title">
-                    <b-input v-model="news.title" placeholder="Title"></b-input>
+                  <b-field v-if="news.title && news.title.length!==0" label="Title">
+                    <b-input v-model="news.title" placeholder="Title" maxlength="100"></b-input>
                   </b-field>
-                  <b-field label="Description">
-                    <b-input type="textarea" v-model="news.description" placeholder="Description"></b-input>
+                  <b-field v-else label="Title"
+                    type="is-danger"
+                    message="title not be null">
+                    <b-input
+                      v-model="news.title"
+                      maxlength="100">
+                    </b-input>
                   </b-field>
-                  <div class="buttons end pt-10">
-                    <b-button type="is-success" @click="putNews(news)" icon-right="check">Save</b-button>
+                  <b-field v-if="news.description && news.description.length!==0" label="Description">
+                    <b-input type="textarea" v-model="news.description" maxlength="1000" placeholder="Description"></b-input>
+                  </b-field>
+                  <b-field v-else label="Description"
+                    type="is-danger"
+                    message="description not be null">
+                    <b-input
+                      v-model="news.description"
+                      maxlength="1000">
+                    </b-input>
+                  </b-field>
+                  <div v-if="news.description && news.title" class="buttons end pt-10">
+                    <b-button v-if="news.description.length===0 || news.title.length===0" type="is-success" icon-right="check" disabled>Save</b-button>
+                    <b-button v-else type="is-success" @click="putNews(news)" icon-right="check">Save</b-button>
                   </div>
                 </b-tab-item>
                 <b-tab-item>
