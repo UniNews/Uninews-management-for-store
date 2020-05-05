@@ -29,5 +29,17 @@ export default {
     deleteComment: (id, cid) => {
         const data = axios.delete(`${API_URL}/articles/${id}/comments/${cid}`)
         return data
-    }
+    },
+    getViewsById: (id) => {
+        const data = axios.get(`${API_URL}/articles/${id}/views`)
+        return data
+    },
+    getLikesById: (id) => {
+        const data = axios.get(`${API_URL}/articles/${id}/likes`)
+        return data
+    },
+    getCommentsById: (id) => {
+        const data = axios.get(`${API_URL}/articles/${id}/comments`)
+        return data
+    },
 }
