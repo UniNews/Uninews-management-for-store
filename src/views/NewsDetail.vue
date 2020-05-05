@@ -34,7 +34,9 @@
                     <span>Basic information</span>
                   </template>
                   <b-field label="Type">
-                    <b-input v-model="news.newsType" placeholder="Type"></b-input>
+                    <b-select v-model="news.newsType" placeholder="Select an article-type" expanded>
+                      <option v-for="option in data" :value="option" :key="option">{{ option }}</option>
+                    </b-select>
                   </b-field>
                   <b-field label="Tags">
                     <b-taginput
@@ -43,6 +45,7 @@
                       autocomplete
                       ref="taginput"
                       icon="label"
+                      maxtags="2"
                       placeholder="Add a tag"
                       @typing="getFilteredTags"
                     >
@@ -296,7 +299,8 @@ export default {
       isLoading: false,
       views: [],
       likes: [],
-      comments: []
+      comments: [],
+      data: ["club", "promotion", "lost-found"],
     };
   },
   async mounted() {

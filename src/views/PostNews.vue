@@ -17,6 +17,7 @@
                 autocomplete
                 icon="label"
                 placeholder="Add a tag"
+                maxtags="2"
                 @typing="getFilteredTags"
               >
                 <template slot-scope="props">
