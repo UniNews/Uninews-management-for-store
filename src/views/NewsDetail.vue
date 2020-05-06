@@ -160,7 +160,6 @@
                     </b-table>
                   </div>
                 </b-tab-item>
-                <!-- TODO: ประกอบไปด้วย users table -->
                 <b-tab-item>
                   <template slot="header">
                     <b-icon icon="thumb-up"></b-icon>
@@ -289,7 +288,6 @@
                     </b-table>
                   </div>
                 </b-tab-item>
-                <!-- TODO: ประกอบไปด้วย users table -->
               </b-tabs>
             </section>
           </div>
@@ -301,6 +299,7 @@
 <script>
 import newsService from "../services/newservice";
 import { convertTimestamptoDate } from "@/assets/javascript/date";
+import BarChart from "@/components/charts/BarChart";
 
 const data = [
   "ทั่วไป",
@@ -313,6 +312,9 @@ const data = [
 ];
 
 export default {
+  components: {
+    BarChart
+  },
   data() {
     return {
       news: {},
@@ -332,7 +334,7 @@ export default {
       await this.fetchNews();
       this.isLoading = false;
     } else {
-      this.$router.push({ path: "/news" });
+      this.$router.push({ path: "/" });
     }
   },
   computed: {
@@ -381,14 +383,14 @@ export default {
       this.isLoading = false;
     },
     async fetchNews() {
-      const result = await newsService.getNewsById(this.newsId);
-      this.news = { ...result.data };
-      const result1 = await newsService.getViewsById(this.newsId);
-      this.views = [...result1.data];
-      const result2 = await newsService.getLikesById(this.newsId);
-      this.likes = [...result2.data];
-      const result3 = await newsService.getCommentsById(this.newsId);
-      this.comments = [...result3.data];
+      const news = await newsService.getNewsById(this.newsId);
+      this.news = news.data;
+      const views = await newsService.getViewsById(this.newsId);
+      this.views = views.data;
+      const likes = await newsService.getLikesById(this.newsId);
+      this.likes = likes.data;
+      const comments = await newsService.getCommentsById(this.newsId);
+      this.comments = comments.data;
     },
     async putNews() {
       if (this.validateTitle === "" && this.validateDescription === "") {

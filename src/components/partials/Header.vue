@@ -9,8 +9,7 @@
       </b-navbar-item>
     </template>
     <template slot="start">
-      <b-navbar-item href="/">Home</b-navbar-item>
-      <b-navbar-item href="/#/news">News</b-navbar-item>
+      <b-navbar-item href="/">News</b-navbar-item>
       <b-navbar-item href="/#/followers">Followers</b-navbar-item>
     </template>
     <template slot="end">

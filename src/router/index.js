@@ -11,7 +11,7 @@ export default new Router({
       component: () => import('../views/Login'),
     },
     {
-      path: '/news',
+      path: '/',
       name: 'News',
       component: () => import('../views/News'),
     },
@@ -31,11 +31,6 @@ export default new Router({
       component: () => import('../views/Followers')
     },
     {
-      path: '/',
-      name: 'Dashboard',
-      component: () => import('../views/Dashboard'),
-    },
-    {
       path: '/user',
       name: 'User',
       component: () => import('../views/User.vue')
@@ -44,6 +39,11 @@ export default new Router({
       path: '/myUser',
       name: 'MyUser',
       component: () => import('../views/MyUser.vue')
+    },
+    {
+      path: '/newsGraph',
+      name: 'NewsGraph',
+      component: () => import('../views/Graphs/NewsGraph.vue')
     }
   ]
 })
