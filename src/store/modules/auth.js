@@ -28,11 +28,18 @@ const actions = {
     commit('SET_LOADING', true)
     commit('SET_ERROR', false)
     try {
-      const result = await userService.login(credentials.username, credentials.password)
-      axios.defaults.headers.common["Authorization"] = `Bearer ${result.data.accessToken}`
-      localStorage.setItem('token', result.data.accessToken)
-      const result2 = await userService.getProfile()
-      commit('SET_AUTH', result2.data)
+      const token = await userService.login(credentials.username, credentials.password)
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token.data.accessToken}`
+      const profile = await userService.getProfile()
+      if (profile.data.role === 'store') {
+        localStorage.setItem('token', token.data.accessToken)
+        commit('SET_AUTH', profile.data)
+      }
+      else {
+        console.log("CALL")
+        axios.defaults.headers.common["Authorization"] = null
+        alert('Email or password is wrong!')
+      }
       commit('SET_LOADING', false)
     } catch (err) {
       commit('SET_ERROR', true)
