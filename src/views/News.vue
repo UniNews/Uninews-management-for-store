@@ -21,7 +21,7 @@
                 class="mt-20 mr-10"
                 type="is-info"
                 icon-right="chart-bar"
-              >See graph</b-button>
+              >Overview</b-button>
               <b-button
                 @click="goCreateNews()"
                 class="mt-20 mr-10"
@@ -94,21 +94,61 @@
           </div>
         </div>
       </section>
+      <b-modal :active.sync="isCardModalActive" scroll="keep">
+        <div class="card shadow ml-20 column">
+          <header class="card-header">
+            <p class="card-header-title">Overview</p>
+          </header>
+          <div class="card-content">
+            <div class="content">
+              <div class="chartAreaWrapper news-graph">
+                <BarChart
+                  :options="this.options"
+                  :width="this.widthGraph"
+                  height="500"
+                  :style="`display: block; height: 250px; width: ${this.widthGraph}px`"
+                  class="walking-speed-chart"
+                  :chartData="this.chartData"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </b-modal>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import BarChart from "@/components/charts/BarChart";
 import userservice from "@/services/userservice";
 export default {
   name: "News",
+  components: {
+    BarChart
+  },
   data() {
     return {
       activeTab: 0,
       news: [],
       query: "",
-      isLoading: false
+      isLoading: false,
+      isCardModalActive: false,
+      chartData: null,
+      options: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                min: 0,
+                stepSize: 1,
+                beginAtZero: true
+              }
+            }
+          ]
+        }
+      }
     };
   },
   methods: {
@@ -119,6 +159,29 @@ export default {
       this.isLoading = true;
       const data = await userservice.getMyArticle(this.getUser()._id);
       this.news = data.data.articles;
+      let lableData = [];
+      let viewsData = [];
+      let likesData = [];
+      this.news.forEach(e => {
+        lableData.push(e.title);
+        viewsData.push(e.views.length);
+        likesData.push(e.likes.length);
+      });
+      this.chartData = {
+        labels: lableData,
+        datasets: [
+          {
+            label: "Views",
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            data: viewsData
+          },
+          {
+            label: "Likes",
+            backgroundColor: "rgba(0, 102, 0, 0.5)",
+            data: likesData
+          }
+        ]
+      };
       this.isLoading = false;
     },
     newsType(type) {
@@ -132,7 +195,7 @@ export default {
       this.$router.push({ name: "PostNews" });
     },
     goOverview() {
-      this.$router.push({ name: "NewsGraph" });
+      this.isCardModalActive = true;
     },
     ...mapGetters({
       getUser: "Auth/getUser"
@@ -150,7 +213,18 @@ export default {
           );
         } else return this.news;
       });
+    },
+    widthGraph() {
+      return this.news.length * 250;
     }
   }
 };
 </script>
+
+<style scoped>
+.chartAreaWrapper {
+  width: 1000;
+  height: 500px;
+  overflow-x: scroll;
+}
+</style>

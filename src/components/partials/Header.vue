@@ -9,19 +9,19 @@
       </b-navbar-item>
     </template>
     <template slot="start">
-      <b-navbar-item href="/">News</b-navbar-item>
+      <b-navbar-item href="/#/">News</b-navbar-item>
       <b-navbar-item href="/#/followers">Followers</b-navbar-item>
     </template>
     <template slot="end">
       <b-navbar-item class="profile" tag="div">
-        <div v-if="$route.name !== 'Login'" @click="profileClicked()">
-          <img :src="getUser()?getUser().avatarURL:null" class="image-avatar" />
-          {{ getUser()?getUser().displayName:null }}
+        <div @click="profileClicked()">
+          <img :src="getUser().avatarURL" class="image-avatar" />
+          {{ getUser().displayName }}
         </div>
       </b-navbar-item>
       <b-navbar-item tag="div">
-        <div v-if="$route.name !== 'Login'" class="buttons">
-          <a class="button is-light" @click="logout()">Logout</a>
+        <div class="buttons">
+          <a class="button is-primary" outlined @click="logout()">Logout</a>
         </div>
       </b-navbar-item>
     </template>
