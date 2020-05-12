@@ -106,7 +106,7 @@ export default {
     filterFollowers() {
       return this.followers.filter(item => {
         if (this.query !== "") {
-          return `${item.displayName.toLowerCase()}${item.bio.toLowerCase()}`.match(
+          return `${item.displayName.toLowerCase()}`.match(
             this.query.toLowerCase()
           );
         } else return true;

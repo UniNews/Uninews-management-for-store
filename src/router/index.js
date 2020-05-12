@@ -41,9 +41,9 @@ export default new Router({
       component: () => import('../views/MyUser.vue')
     },
     {
-      path: '/newsGraph',
-      name: 'NewsGraph',
-      component: () => import('../views/Graphs/NewsGraph.vue')
-    }
+      path: '/comment',
+      name: 'Comment',
+      component: () => import('../views/Comment')
+    },
   ]
 })

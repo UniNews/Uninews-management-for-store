@@ -1,36 +1,41 @@
 <template>
-  <section class="hero is-large">
-    <div class="hero-body">
-      <div class="container">
-        <div class="card card-width margin-auto card-padding">
+  <div class="center">
+    <section class="hero is-large">
+      <div class="modal-card shadow" style="width: auto">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Store login</p>
+        </header>
+        <section class="modal-card-body">
           <b-field label="Username">
-            <b-input v-model="username"></b-input>
+            <b-input v-model="username" placeholder="Your username" required></b-input>
           </b-field>
           <b-field label="Password">
-            <b-input type="password" v-model="password"></b-input>
+            <b-input
+              type="password"
+              v-model="password"
+              password-reveal
+              placeholder="Your password"
+              required
+            ></b-input>
           </b-field>
-          <div class="dp-flex flex-center">
-            <button
-              class="button is-success is-outlined"
-              v-on:click="onSubmit(username,password)"
-            >Login</button>
-          </div>
-        </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button @click="onSubmit()" class="button is-primary">Login</button>
+        </footer>
       </div>
-    </div>
-    <b-loading :is-full-page="true" :active.sync="isLoading" />
-  </section>
+      <b-loading :is-full-page="true" :active.sync="isLoading" />
+    </section>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-
 export default {
   name: "Login",
   data() {
     return {
-      username: null,
-      password: null,
+      username: "",
+      password: "",
       isLoading: false
     };
   },
@@ -41,10 +46,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      login: "Auth/login",
-      autoLogin: "Auth/autoLogin"
+      login: "Auth/login"
     }),
-    async onSubmit(username, password) {
+    async onSubmit() {
       this.isLoading = true;
       const auth = {
         username: this.username,
@@ -61,16 +65,3 @@ export default {
   }
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.card-width {
-  max-width: 33.3%;
-}
-.margin-auto {
-  margin: auto;
-}
-.card-padding {
-  padding: 15px;
-}
-</style>

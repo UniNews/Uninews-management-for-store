@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isLoading">
+    <div v-if="isLoading || !news">
       <b-loading :is-full-page="true" :active.sync="isLoading" />
     </div>
     <div v-else class="container mb-20 mt-20">
@@ -17,12 +17,17 @@
                     <b-icon icon="newspaper"></b-icon>
                     <span>News</span>
                   </template>
-                  <!-- TODO: ประกอบไปด้วย _id, author, createdAt -->
                   <b-field label="ID">
                     <b-input disabled v-model="news._id" placeholder="ID"></b-input>
                   </b-field>
                   <b-field v-if="news.author" label="Author">
-                    <b-input disabled v-model="news.author.displayName" placeholder="Author"></b-input>
+                    <div class="buttons">
+                      <b-button
+                        @click="userDetailClicked(news.author._id)"
+                        type="is-primary"
+                        outlined
+                      >{{news.author.displayName}}</b-button>
+                    </div>
                   </b-field>
                   <b-field label="Date">
                     <b-input disabled v-model="createdAt" placeholder="Date"></b-input>
@@ -39,7 +44,11 @@
                   </template>
                   <b-field label="Type">
                     <b-select v-model="news.newsType" placeholder="Select an article-type" expanded>
-                      <option v-for="option in data" :value="option" :key="option">{{ option }}</option>
+                      <option
+                        v-for="option in this.newsTypes"
+                        :value="option"
+                        :key="option"
+                      >{{ option }}</option>
                     </b-select>
                   </b-field>
                   <b-field label="Tags">
@@ -140,7 +149,7 @@
                           >{{props.row.active ? 'activated' : 'banned'}}</b-tag>
                         </b-table-column>
                         <b-table-column label="Detail">
-                          <b-button @click="detailClicked(props.row._id)">
+                          <b-button @click="userDetailClicked(props.row._id)">
                             <span>
                               <b-icon icon="account-search" size="25"></b-icon>
                             </span>
@@ -201,7 +210,7 @@
                           >{{props.row.active ? 'activated' : 'banned'}}</b-tag>
                         </b-table-column>
                         <b-table-column label="Detail">
-                          <b-button @click="detailClicked(props.row._id)">
+                          <b-button @click="userDetailClicked(props.row._id)">
                             <span>
                               <b-icon icon="account-search" size="25"></b-icon>
                             </span>
@@ -261,18 +270,11 @@
                           label="Date"
                         >{{ new Date(props.row.createdAt).toLocaleDateString() }}</b-table-column>
                         <b-table-column label="Detail">
-                          <b-button @click="detailClicked(props.row.author._id)">
+                          <b-button @click="commentDetailClicked(props.row._id)">
                             <span>
-                              <b-icon icon="account-search" size="25"></b-icon>
+                              <b-icon icon="database-search" size="25"></b-icon>
                             </span>
                           </b-button>
-                        </b-table-column>
-                        <b-table-column>
-                          <b-button
-                            type="is-danger"
-                            @click="deleteComment(props.row._id)"
-                            icon-left="delete"
-                          >Delete</b-button>
                         </b-table-column>
                       </template>
                       <template slot="empty">
@@ -297,34 +299,19 @@
   </div>
 </template>
 <script>
-import newsService from "../services/newservice";
+import newsService from "@/services/newservice";
 import { convertTimestamptoDate } from "@/assets/javascript/date";
-import BarChart from "@/components/charts/BarChart";
-
-const data = [
-  "ทั่วไป",
-  "ความรัก",
-  "การเรียน",
-  "กีฬา",
-  "เตือนภัย",
-  "รีวิว",
-  "อาหาร"
-];
-
+import { NEWS_TYPES, NEWS_TAGS } from "@/config/constants";
 export default {
-  components: {
-    BarChart
-  },
   data() {
     return {
-      news: {},
+      news: null,
       activeTab: 0,
-      filteredTags: data,
+      filteredTags: NEWS_TAGS,
       isLoading: false,
       views: [],
       likes: [],
-      comments: [],
-      data: ["club", "promotion", "lost-found"]
+      comments: []
     };
   },
   async mounted() {
@@ -356,11 +343,14 @@ export default {
       )
         return "Description must be more than 0 chars long";
       else return "";
+    },
+    newsTypes() {
+      return NEWS_TYPES;
     }
   },
   methods: {
     getFilteredTags(text) {
-      this.filteredTags = data.filter(option => {
+      this.filteredTags = NEWS_TAGS.filter(option => {
         return (
           option
             .toString()
@@ -373,8 +363,14 @@ export default {
       if (isActive) return "is-success";
       else return "is-danger";
     },
-    detailClicked(id) {
+    userDetailClicked(id) {
       this.$router.push({ name: "User", params: { userId: id } });
+    },
+    commentDetailClicked(id) {
+      this.$router.push({
+        name: "Comment",
+        params: { commentId: id }
+      });
     },
     async deleteComment(id) {
       this.isLoading = true;
@@ -391,6 +387,9 @@ export default {
       this.likes = likes.data;
       const comments = await newsService.getCommentsById(this.newsId);
       this.comments = comments.data;
+    },
+    userDetailClicked(id) {
+      this.$router.push({ name: "User", params: { userId: id } });
     },
     async putNews() {
       if (this.validateTitle === "" && this.validateDescription === "") {
@@ -413,7 +412,7 @@ export default {
       this.isLoading = true;
       await newsService.deleteArticle(_id);
       this.isLoading = false;
-      this.$router.push({ path: "/news" });
+      this.$router.push({ path: "/" });
     }
   }
 };
