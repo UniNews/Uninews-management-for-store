@@ -12,11 +12,10 @@
       <b-navbar-item href="/#/">News</b-navbar-item>
       <b-navbar-item href="/#/followers">Followers</b-navbar-item>
     </template>
-    <template slot="end">
-      <b-navbar-item class="profile" tag="div">
-        <div @click="profileClicked()">
-          <img :src="getUser().avatarURL" class="image-avatar" />
-          {{ getUser().displayName }}
+    <template v-if="this.user !== null" slot="end">
+      <b-navbar-item class="profile-nav" tag="div">
+        <div class="profile" @click="profileClicked()">
+          <span>{{ user.displayName }}</span>
         </div>
       </b-navbar-item>
       <b-navbar-item tag="div">
@@ -37,14 +36,16 @@ export default {
     logout() {
       this.$emit("logout", true);
     },
-    ...mapGetters({
-      getUser: "Auth/getUser"
-    }),
     profileClicked() {
       this.$router.push({
         name: "MyUser"
       });
     }
+  },
+  computed: {
+    ...mapGetters({
+      user: "Auth/getUser"
+    })
   }
 };
 </script>
